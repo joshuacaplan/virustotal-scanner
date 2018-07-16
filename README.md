@@ -6,6 +6,8 @@ A python3 app that allows you to use the VirusTotal webapp service via the comma
 > ### Aren't there many other command-line VirusTotal apps out there?
 Yes, but I made this because I was bored. So those other apps don't count. Just use mine instead :D
 
+## *NOTICE*: This app no longer works and I don't really feel like updating it. Maybe one day I will.
+
 ## Requirements
 
 ### Linux
