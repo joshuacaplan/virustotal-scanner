@@ -18,5 +18,5 @@ If you have windows enter the command `python` and check if it says `Python 3.x`
 ```
 git clone https://github.com/LaughingLove/virustotal-scanner
 cd virustotal-scanner
-python3 virustotal.py
+python3 main.py
 ```
