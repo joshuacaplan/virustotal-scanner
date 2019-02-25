@@ -20,12 +20,21 @@ def is_num(string):
 
 def scan_file(api, filedir):
     filepath = Path(filedir)
+
+    # Checking if it's an actual path
     if not filepath.is_file():
         print("Not a file path!")
         sys.exit(0)
-    # print(filedir)
-    rp = requests.post("https://www.virustotal.com/vtapi/v2/file/scan", data={'apikey': api, 'file': filedir})
+    
+    # Opening the file
+    with open(filedir, 'r') as f: #open the file
+        contents = f.readlines() #put the lines to a variable (list).
+        #print(contents)
+
+    # Scanning the file inputted
+    rp = requests.post("https://www.virustotal.com/vtapi/v2/file/scan", data={'apikey': api, 'file': contents})
     print(rp.status_code, rp.reason)
+
     jsonpost = json.loads(rp.text)
     print(jsonpost)
     resource = jsonpost.get("scan_id")
@@ -35,8 +44,12 @@ def scan_file(api, filedir):
     #time.sleep(15)
     rg = requests.get("https://www.virustotal.com/vtapi/v2/file/report" + "?apikey=" + api + "&resource=" + resource)
     print(rg.status_code, rg.reason)
-    jsonget = json.loads(rg.text)
-    print("VirusTotal is analyzing")
+   #print(rg.text)
+    try:
+        jsonget = json.loads(rg.text)
+        print("VirusTotal is analyzing")
+    except JSONDecodeError:
+        print("Error loading json!")
     count = 0
     
     response_code = jsonget.get("response_code")
@@ -52,9 +65,16 @@ def scan_file(api, filedir):
             time.sleep(0.25) 
         time.sleep(5.0 - ((time.time() - start_time) % 5.0))
         rg = requests.get("https://www.virustotal.com/vtapi/v2/file/report" + "?apikey=" + api + "&resource=" + resource)
-        jsonget = json.loads(rg.text)
-        response_code = jsonget.get("response_code")
-        # count += 1
+        #print(rg.text)
+        count += 1
+        #print(count)
+        try:
+            jsonget = json.loads(rg.text)
+            response_code = jsonget.get("response_code")
+        except json.decoder.JSONDecodeError:
+            print("Failed to load json, maybe http error code 204?")
+        
+        
     print("\n")
 
     scans = jsonget.get("scans")
